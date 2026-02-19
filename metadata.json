@@ -1,5 +1,5 @@
 {
-  "name": "Savvy-AAU-108 Galaxy",
+  "name": "AAU-Verse",
   "description": "A modern, galaxy-themed interactive digital campus infrastructure platform for Addis Ababa University.",
   "requestFramePermissions": [
     "geolocation"
