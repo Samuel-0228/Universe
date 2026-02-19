@@ -75,17 +75,27 @@
         scrollbar-width: none;
       }
     </style>
+  <!--[if !IE]><!-->
+  <!-- Safari on iOS < 16.4 does not support import maps. -->
+  <!--
   <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
+  {
+    "imports": {
+      "react/": "https://esm.sh/react@^19.2.4/",
+      "react": "https://esm.sh/react@^19.2.4",
+      "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
+      "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+      "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
+    }
   }
-}
-</script>
+  </script>
+  -->
+  <noscript>
+    <div style="background: #fffae5; color: #b45309; padding: 1em; text-align: center;">
+      This site uses import maps, which are not supported on Safari on iOS < 16.4. Please update your browser for the best experience.
+    </div>
+  </noscript>
+  <!--<![endif]-->
 <link rel="stylesheet" href="/index.css">
 </head>
   <body>
