@@ -31,10 +31,10 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex gap-4 pointer-events-auto">
-          <button className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
+          <button type="button" title="User Profile" className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
             <Icon name="User" size={20} className="text-white/60" />
           </button>
-          <button className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
+          <button type="button" title="Settings" className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
             <Icon name="Settings" size={20} className="text-white/60" />
           </button>
         </div>
