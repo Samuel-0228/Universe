@@ -1,7 +1,5 @@
 {
-  "name": "AAU-Verse",
-  "description": "A modern, galaxy-themed interactive digital campus infrastructure platform for Addis Ababa University.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
+  "name": "Savvy-AAU: Digital Campus Intelligence",
+  "description": "The official digital navigation, discovery, and academic exploration system for all 15 Addis Ababa University campuses. Investor-grade institutional infrastructure.",
+  "requestFramePermissions": ["geolocation"]
 }
