@@ -15,6 +15,29 @@ export async function getCampusById(id: string) {
   return { ...campus, departments, services, buildings };
 }
 
+export async function getNewsEvents(campusId?: string, type?: string) {
+  let query = "SELECT n.*, c.name as campus_name FROM news_events n JOIN campuses c ON n.campus_id = c.id";
+  const params: any[] = [];
+
+  const conditions: string[] = [];
+  if (campusId) {
+    conditions.push("n.campus_id = ?");
+    params.push(campusId);
+  }
+  if (type) {
+    conditions.push("n.type = ?");
+    params.push(type);
+  }
+
+  if (conditions.length > 0) {
+    query += " WHERE " + conditions.join(" AND ");
+  }
+
+  query += " ORDER BY n.date DESC";
+
+  return db.prepare(query).all(...params);
+}
+
 export async function searchGalaxy(query: string) {
   const q = `%${query}%`;
   return db.prepare(`

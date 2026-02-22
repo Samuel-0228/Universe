@@ -7,6 +7,7 @@ import GalaxyMap from "@/features/galaxy/components/GalaxyMap";
 import CampusGrid from "@/features/campuses/components/CampusGrid";
 import DistanceEngine from "@/features/distance-engine/components/DistanceEngine";
 import SearchSystem from "@/features/search/components/SearchSystem";
+import NewsFeed from "@/features/news-events/components/NewsFeed";
 import UserLocationMode from "@/hooks/useLocation";
 import { Campus } from "@/types/campus";
 
@@ -105,6 +106,8 @@ export default function Home() {
           </div>
           <GalaxyMap campuses={campuses} onSelect={setSelectedCampus} selectedId={selectedCampus?.id} />
         </section>
+
+        <NewsFeed campuses={campuses} />
 
         <section className="mb-20">
           <div className="flex items-center justify-between mb-8">
