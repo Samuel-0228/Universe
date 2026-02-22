@@ -1,13 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, Globe, Compass, Layers, Activity, Users, Calendar, Share2, X, Navigation } from "lucide-react";
+import { ArrowRight, Globe, Compass, Activity, Users, Calendar, Share2, X, Navigation } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import GalaxyMap from "@/features/galaxy/components/GalaxyMap";
 import CampusGrid from "@/features/campuses/components/CampusGrid";
 import DistanceEngine from "@/features/distance-engine/components/DistanceEngine";
 import SearchSystem from "@/features/search/components/SearchSystem";
-import NewsFeed from "@/features/news-events/components/NewsFeed";
 import UserLocationMode from "@/hooks/useLocation";
 import { Campus } from "@/types/campus";
 
@@ -15,8 +14,8 @@ const LandingPage = ({ onEnter }: { onEnter: () => void }) => (
   <div className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
     <div className="absolute inset-0 z-0">
       <img 
-        src="https://www.aau.edu.et/_next/image?url=%2Fimages%2Fforumbuilding.jpg&w=3840&q=75" 
-        alt="AAU Forum Building" 
+        src="https://picsum.photos/seed/aau/1920/1080" 
+        alt="AAU Background" 
         className="w-full h-full object-cover opacity-40"
         referrerPolicy="no-referrer"
       />
@@ -49,7 +48,7 @@ const LandingPage = ({ onEnter }: { onEnter: () => void }) => (
         Savvy-AAU-108
       </h1>
       <p className="text-xl md:text-2xl text-white/60 font-medium max-w-2xl mx-auto mb-12 tracking-tight">
-        The official digital infrastructure connecting the 15 star nodes of Addis Ababa University.
+        The official digital infrastructure connecting the star nodes of Addis Ababa University.
       </p>
       
       <button 
@@ -69,11 +68,18 @@ export default function Home() {
   const [isEntered, setIsEntered] = useState(false);
   const [campuses, setCampuses] = useState<Campus[]>([]);
   const [selectedCampus, setSelectedCampus] = useState<Campus | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchCampuses = async () => {
-    const res = await fetch("/api/campuses");
-    const data = await res.json();
-    setCampuses(data);
+    try {
+      const res = await fetch("/api/campuses");
+      const data = await res.json();
+      setCampuses(data);
+    } catch (err) {
+      console.error("Failed to fetch campuses:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -97,29 +103,39 @@ export default function Home() {
 
         <SearchSystem onSelect={(c) => setSelectedCampus(campuses.find(cp => cp.id === c.id) || null)} />
 
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-black flex items-center gap-3">
-              <Globe size={24} className="text-aau-gold" />
-              Orbital Node Visualization
-            </h3>
+        {loading ? (
+          <div className="h-[400px] flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-aau-gold border-t-transparent rounded-full animate-spin" />
           </div>
-          <GalaxyMap campuses={campuses} onSelect={setSelectedCampus} selectedId={selectedCampus?.id} />
-        </section>
-
-        <NewsFeed campuses={campuses} />
-
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-black flex items-center gap-3">
-              <Activity size={24} className="text-aau-gold" />
-              Campus Node Directory
-            </h3>
+        ) : campuses.length === 0 ? (
+          <div className="p-20 text-center glass-panel rounded-[40px]">
+            <p className="text-white/40 font-bold uppercase tracking-widest">No nodes detected in this sector.</p>
           </div>
-          <CampusGrid campuses={campuses} onSelect={setSelectedCampus} />
-        </section>
+        ) : (
+          <>
+            <section className="mb-20">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-2xl font-black flex items-center gap-3">
+                  <Globe size={24} className="text-aau-gold" />
+                  Orbital Node Visualization
+                </h3>
+              </div>
+              <GalaxyMap campuses={campuses} onSelect={setSelectedCampus} selectedId={selectedCampus?.id} />
+            </section>
 
-        <DistanceEngine campuses={campuses} />
+            <section className="mb-20">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-2xl font-black flex items-center gap-3">
+                  <Activity size={24} className="text-aau-gold" />
+                  Campus Node Directory
+                </h3>
+              </div>
+              <CampusGrid campuses={campuses} onSelect={setSelectedCampus} />
+            </section>
+
+            <DistanceEngine campuses={campuses} />
+          </>
+        )}
         
         <UserLocationMode campuses={campuses} onSelect={setSelectedCampus} />
 

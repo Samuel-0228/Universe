@@ -1,7 +1,11 @@
 import Database from "better-sqlite3";
 import path from "path";
 
-const db = new Database("savvy_aau.db");
+const dbPath = path.resolve(process.cwd(), "savvy_aau.db");
+const db = new Database(dbPath);
+
+// Enable foreign keys
+db.pragma('foreign_keys = ON');
 
 // Initialize Database
 db.exec(`
@@ -22,7 +26,7 @@ db.exec(`
     campus_id TEXT,
     name TEXT,
     type TEXT,
-    FOREIGN KEY(campus_id) REFERENCES campuses(id)
+    FOREIGN KEY(campus_id) REFERENCES campuses(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS services (
@@ -31,7 +35,7 @@ db.exec(`
     name TEXT,
     description TEXT,
     icon TEXT,
-    FOREIGN KEY(campus_id) REFERENCES campuses(id)
+    FOREIGN KEY(campus_id) REFERENCES campuses(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS buildings (
@@ -41,40 +45,37 @@ db.exec(`
     lat REAL,
     lng REAL,
     details TEXT,
-    FOREIGN KEY(campus_id) REFERENCES campuses(id)
-  );
-
-  CREATE TABLE IF NOT EXISTS news_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    campus_id TEXT,
-    title TEXT NOT NULL,
-    content TEXT,
-    type TEXT, -- 'News', 'Seminar', 'Cultural', 'Announcement'
-    date TEXT,
-    image_url TEXT,
-    FOREIGN KEY(campus_id) REFERENCES campuses(id)
+    FOREIGN KEY(campus_id) REFERENCES campuses(id) ON DELETE CASCADE
   );
 `);
 
-// Seed news and events if empty
-const newsCount = db.prepare("SELECT COUNT(*) as count FROM news_events").get() as { count: number };
-if (newsCount.count === 0) {
-  const insertNews = db.prepare(`
-    INSERT INTO news_events (campus_id, title, content, type, date, image_url)
-    VALUES (?, ?, ?, ?, ?, ?)
+// Seed Data if empty
+const campusCount = db.prepare("SELECT COUNT(*) as count FROM campuses").get() as { count: number };
+
+if (campusCount.count === 0) {
+  const insertCampus = db.prepare(`
+    INSERT OR IGNORE INTO campuses (id, name, shortName, lat, lng, address, description, color, contact)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  const initialNews = [
-    ["sidist-kilo", "Annual Research Symposium 2026", "Join us for the flagship academic event of the year at the Main Campus.", "Seminar", "2026-03-15", "https://picsum.photos/seed/symposium/800/600"],
-    ["arat-kilo", "New Quantum Computing Lab Opening", "Arat Kilo expands its research capabilities with a state-of-the-art physics lab.", "News", "2026-02-28", "https://picsum.photos/seed/lab/800/600"],
-    ["amist-kilo", "AAiT Innovation Week", "Showcasing the best engineering projects from our graduating class.", "Cultural", "2026-04-10", "https://picsum.photos/seed/innovation/800/600"],
-    ["tikur-anbessa", "Public Health Awareness Campaign", "Tikur Anbessa Hospital leads a city-wide health initiative.", "Announcement", "2026-03-05", "https://picsum.photos/seed/health/800/600"],
-    ["yared-music", "Evening of Ethiopian Jazz", "A special performance by the Yared School of Music ensemble.", "Cultural", "2026-03-20", "https://picsum.photos/seed/jazz/800/600"],
+  const campuses = [
+    ['main', 'Main Campus (6 Kilo)', 'MAIN', 9.0384, 38.7619, '6 Kilo, Addis Ababa', 'The historic heart of AAU, housing the central administration and social sciences.', '#D4AF37', '+251 11 123 4567'],
+    ['science', 'College of Natural Sciences', 'CNS', 9.0347, 38.7625, '4 Kilo, Addis Ababa', 'Home to the Faculty of Science and the National Herbarium.', '#4A90E2', '+251 11 123 4568'],
+    ['technology', 'AAiT (5 Kilo)', 'AAIT', 9.0300, 38.7500, '5 Kilo, Addis Ababa', 'Addis Ababa Institute of Technology, the premier engineering hub.', '#E94E77', '+251 11 123 4569'],
+    ['health', 'CHMS (Black Lion)', 'CHMS', 9.0180, 38.7480, 'Tikur Anbessa, Addis Ababa', 'College of Health Sciences and the Black Lion Specialized Hospital.', '#50E3C2', '+251 11 123 4570'],
+    ['business', 'CBE (6 Kilo)', 'CBE', 9.0400, 38.7600, '6 Kilo, Addis Ababa', 'College of Business and Economics.', '#F5A623', '+251 11 123 4571']
   ];
 
-  for (const item of initialNews) {
-    insertNews.run(...item);
+  for (const c of campuses) {
+    insertCampus.run(...c);
   }
+
+  // Seed some departments
+  const insertDept = db.prepare("INSERT OR IGNORE INTO departments (campus_id, name, type) VALUES (?, ?, ?)");
+  insertDept.run('main', 'Department of History', 'Social Sciences');
+  insertDept.run('main', 'School of Law', 'Law');
+  insertDept.run('technology', 'School of Electrical Engineering', 'Engineering');
+  insertDept.run('science', 'Department of Physics', 'Natural Sciences');
 }
 
 export default db;
