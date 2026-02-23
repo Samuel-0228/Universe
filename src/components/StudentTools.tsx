@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Calculator, Calendar, BookOpen, MapPin, X, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -138,5 +138,3 @@ const GPACalculator = () => {
     </div>
   );
 };
-
-import { AnimatePresence } from 'framer-motion';
