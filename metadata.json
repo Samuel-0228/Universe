@@ -1,7 +1,0 @@
-{
-  "name": "universe-108",
-  "description": "The official digital navigation, discovery, and academic exploration system for all 15 Addis Ababa University campuses. Investor-grade institutional infrastructure.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
-}
