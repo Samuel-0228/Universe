@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase } from "@/lib/supabase";
 import { Campus } from "@/types/campus";
 
 export async function getCampuses(): Promise<Campus[]> {
@@ -50,10 +50,6 @@ export async function getCampusById(id: string): Promise<Campus | null> {
 }
 
 export async function searchGalaxy(query: string) {
-  // Supabase doesn't easily support UNION across different tables in a single simple query via the JS client
-  // for a global search. We'll do multiple queries or just search campuses for now.
-  // In a real app, you might use a RPC or a more complex query.
-  
   const { data: campuses } = await supabase
     .from('campuses')
     .select('id, name, description')
